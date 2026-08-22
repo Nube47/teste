@@ -1,4 +1,5 @@
-const btnCadastrar = document.getElementById("btnCadastrar");
+const btnCadastrar = document.getElementById("btnCadastrar")
+
 const Alunos = [];
 const metricasTurma = {
     totalAlunos: 0,
@@ -8,7 +9,7 @@ const metricasTurma = {
 
 function adicionarAluno(iptNome, iptNota1, iptNota2) {
     const iptMedia = (Number(iptNota1) + Number(iptNota2)) / 2;
-    let iptSituacao = "Não Verificado";
+    let iptSituacao;
 
     if (iptMedia > 6) {
         iptSituacao = "Aprovado";
@@ -25,19 +26,20 @@ function adicionarAluno(iptNome, iptNota1, iptNota2) {
     };
 }
 
-function insercaoTabela(iptNome, iptNota1, iptNota2, iptMedia, iptSituacao) {
-    const containerTabela = document.getElementById("tblAlunos");
+function insercaoTabela(iptNome, iptNota1, iptNota2, iptMedia, iptSituacao, iptIdentificador) {
+    const containerTabela = document.getElementById("tblAlunos")
 
-    const novaTabela = document.createElement("tr");
+    const novaTabela = document.createElement(`tr`)
+    novaTabela.dataset.id = iptIdentificador
 
     novaTabela.innerHTML = `
-        <tr>
+            <td">${iptIdentificador}</td>
             <td>${iptNome}</td>
             <td>${iptNota1}</td>
             <td>${iptNota2}</td>
             <td>${iptMedia}</td>
-            <td>${iptSituacao}</td>
-        </tr>
+            <td> <span class="situacao ${iptSituacao}">${iptSituacao}</span></td>
+            <button class="btn-excluir" type="button" id="btnDeletar">Excluir</button>
     `;
 
     containerTabela.appendChild(novaTabela);
@@ -89,23 +91,50 @@ function atualizarMetricasTurma() {
 // Botão de cadastrar
 btnCadastrar.addEventListener("click", function () {
     const iptNome = document.querySelector("#iptNome").value;
-    const iptNota1 = document.querySelector("#iptNota1").value;
-    const iptNota2 = document.querySelector("#iptNota2").value;
+    let iptNota1 = document.querySelector("#iptNota1").value;
+    let iptNota2 = document.querySelector("#iptNota2").value;
+
+    if (iptNota1 == "" || iptNota1 == "e"
+    || iptNota2 == "" || iptNota2 == "e"){
+        alert("Digite valores!")
+        return
+    }
+    iptNota1 = Number(iptNota1)
+    iptNota2 = Number(iptNota2)
+
+    if(
+        !Number.isFinite(iptNota1) || !Number.isFinite(iptNota2)
+        || iptNota1 < 0 || iptNota1 > 10
+        || iptNota2 < 0 || iptNota2 > 10
+    ) {
+        alert("Digite valores corretos!")
+        return
+    }
 
     Alunos.push(adicionarAluno(iptNome, iptNota1, iptNota2));
 
-    const iptMedia = Alunos[Alunos.length - 1].iptMedia;
-    const iptSituacao = Alunos[Alunos.length - 1].iptSituacao;
+    const iptIdentificador = Alunos.length - 1;
+    const iptMedia = Alunos[iptIdentificador].iptMedia;
+    const iptSituacao = Alunos[iptIdentificador].iptSituacao;
 
     insercaoTabela(
         iptNome,
         iptNota1,
         iptNota2,
         iptMedia,
-        iptSituacao
+        iptSituacao,
+        iptIdentificador
     );
 
     atualizarMetricasTurma();
 
     console.log(metricasTurma);
 });
+
+const btnDeletar = document.getElementById("btnDeletar")
+btnDeletar.addEventListener("click", function(){
+    const tr = this.closest("tr");
+    const iptIdentificador = rt.dataset.id;
+    Alunos[iptIdentificador].
+    tr.remove();
+})
